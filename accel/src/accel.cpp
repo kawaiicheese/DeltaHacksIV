@@ -40,19 +40,19 @@ void print_accel()
         /* display x aceleration */
        // lcd->setCursor(1,0);
         //snprintf(buffer, sizeof(buffer), "%f", ax);
-		printf("%f", ax);
+		printf("%f ", ax);
         //lcd->write(buffer);
 
         /* display y acceleration */
        // lcd->setCursor(1,6);
         //snprintf(buffer, sizeof(buffer), "%f", ay);
-		printf("%f", ay);
+		printf("%f ", ay);
        // lcd->write(buffer);
 
         /* display z acceleration */
        // lcd->setCursor(1,12);
         //snprintf(buffer, sizeof(buffer), "%f", az);
-		printf("%f", az);
+		printf("%f\n", az);
        // lcd->write(buffer);
 }
 
