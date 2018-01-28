@@ -65,6 +65,7 @@ int main(void)
 	//lcd = new upm::Jhd1313m1(I2C_LCD_BUS, LCD_ADDR, RGB_ADDR);
 	accel = new MMA7660(I2C_ACCEL_BUS, ACCEL_ADDR);
 
+	while(true){
         /* place device in standby mode so we can write registers */
         accel->setModeStandby();
 
@@ -83,7 +84,7 @@ int main(void)
         /* place device into active mode */
         accel->setModeActive();
 
-
+	}
 	/* set background color as blue and display x, y z */
 	//lcd->setColor(0x00, 0x00, 0xff);
 	//lcd->setCursor(0,0);
@@ -109,7 +110,7 @@ int main(void)
 	
 		/* sleep for 0.5s */
 		usleep(500000);
-
+	
 		/* default to blue */
 		//lcd->setColor(0x00, 0x00, 0xff);
 	//}
