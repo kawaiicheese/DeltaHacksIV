@@ -1,4 +1,4 @@
-/*****************************************************************************/
+//*****************************************************************************/
 //	Function:    Get the accelemeter of the x/y/z axis. 
 //  Hardware:    Grove - 3-Axis Digital Accelerometer(±1.5g)
 //	Arduino IDE: Arduino-1.0
@@ -25,6 +25,7 @@
 
 #include <Wire.h>
 #include "MMA7660.h"
+
 MMA7660 accelemeter;
 
 //import some time shiet
@@ -32,14 +33,16 @@ MMA7660 accelemeter;
 //PrintWriter output;
 
 const int buttonPin = 2;
+const int outPin=8;
+const int outButton=11; 
 
 int buttonState = 0;
 
 int lastMillis = 0;
 
-int allowedGVariation = .15;
+float allowedGVariation = .17;
 
-int baseZG = 0;
+double baseZG = 0.0;
 
 int proper = 0;
 int tempImproper = 0;
@@ -52,40 +55,48 @@ int8_t y;
 int8_t z;
 float ax,ay,az;
 
-
 void setup()
 {
 	accelemeter.init();  
 	Serial.begin(9600);
- 
+
+  delay(500);
+  
+  accelemeter.getAcceleration(&ax,&ay,&az);
+  baseZG = az - .25;
+  
   pinMode(buttonPin, INPUT);
+  pinMode(outPin, OUTPUT);
 }
 
 void loop()
 {
-    
-  buttonState = digitalRead(buttonPin);
 
+  Serial.print("base ");
+  Serial.println(baseZG);
+  
+  Serial.println(tempImproper);
+  Serial.println(proper);  
+  buttonState = digitalRead(buttonPin);
+  
   if (buttonState)
   {
     
+    digitalWrite(outButton,HIGH);
+    
     if (improperPosition()){
       tempImproper += 1;
+      digitalWrite(outPin,HIGH);
     }
     else
     {
       proper += 1;
+      digitalWrite(outPin,LOW);
     }
-
-    
-   
-  /*if (buttonState && ((millis() - lastMillis)/1000 > 2.00)){
-    dataCollect();
   }else{
-    endProcess();
+   digitalWrite(outButton,LOW);
   }
-  */
-  }
+}
   /*
   if(improper >= reminderFrequency)
   {
@@ -94,14 +105,10 @@ void loop()
     tempImproper = 0;
   }
   */
-}
 
 void dataCollect(){
    
-
   accelemeter.getXYZ(&x,&y,&z);
-
-  //value = value + x + "\t" + y + "\t" + z + "\t";
 
     Serial.println("Position of X/Y/Z: ");
     Serial.println(x); 
@@ -111,9 +118,7 @@ void dataCollect(){
     Serial.println(z);
   
   accelemeter.getAcceleration(&ax,&ay,&az);
-
-  //value= value + ax + "\t" + ay + "\t" + az;
-  
+   
   Serial.println("accleration of X/Y/Z: ");
   Serial.print(ax);
   Serial.println(" g");
@@ -122,27 +127,41 @@ void dataCollect(){
   Serial.print(az);
   Serial.println(" g");
   Serial.println("*************");
-  delay(1000); 
+  delay(3000); 
 }
 
-bool improperPosition(){
+boolean improperPosition(){
   
    dataCollect();
+   Serial.print("VAR1 ");
+   Serial.println(baseZG + allowedGVariation);
+
+   Serial.print("VAR2 ");
+   Serial.println(baseZG - allowedGVariation);
+
+   Serial.print("AZ ");
+   Serial.println(az);
+   
    if(baseZG + allowedGVariation < az  || baseZG - allowedGVariation > az )
     {
-      delay(1000);
+      delay(3000);
       dataCollect();
-      if(baseZG + allowedGVariation > az  || baseZG - allowedGVariation < az ){
+      if(baseZG + allowedGVariation < az  || baseZG - allowedGVariation > az ){
 
-      tempImproper += 1;
-      
+      return true;
+      }
+      else
+      {
+        delay(3000);
+        return false;
+      }
     }
     else
-    {
-      delay(1000);
+    { 
+      delay(3000);
+    
+      return false; 
     }
-  }
-  
 }
 /*
 void properPosition(){
@@ -154,32 +173,19 @@ void properPosition(){
       dataCollect();
       if(baseZG + allowedGVariation > az  || baseZG - allowedGVariation < aZ ){
 
-      proper += 1;
-      
+      proper += 1;   
     }
     else
     {
       delay(1000);
     }
-  }
-
-  
+  } 
 }
-
-
-  
-}
-
-void draw() {
-    if (mySerial.available() > 0 ) {
-         if ( value != null ) {
-              output.println(value);
-         }
-    }
 }
 */
 
 void endProcess(){
- // draw();  
+  float bad=tempImproper/(tempImproper + proper);
+  printf("You did not sit in a proper posture for %f% of the time sitting this session.", bad);
 }
 
