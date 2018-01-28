@@ -94,8 +94,7 @@ void loop()
       digitalWrite(outPin,LOW);
     }
   }else{
-   digitalWrite(outButton,LOW); 
-    
+   digitalWrite(outButton,LOW);
   }
 }
   /*
@@ -128,7 +127,7 @@ void dataCollect(){
   Serial.print(az);
   Serial.println(" g");
   Serial.println("*************");
-  delay(1000); 
+  delay(3000); 
 }
 
 boolean improperPosition(){
