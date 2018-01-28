@@ -103,7 +103,7 @@ void dataCollect(){
 
   //value = value + x + "\t" + y + "\t" + z + "\t";
 
-    serial.println("Position of X/Y/Z: ")
+    Serial.println("Position of X/Y/Z: ");
     Serial.println(x); 
     Serial.print("y = ");
     Serial.println(y);   
@@ -112,7 +112,7 @@ void dataCollect(){
   
   accelemeter.getAcceleration(&ax,&ay,&az);
 
-  value= value + ax + "\t" + ay + "\t" + az;
+  //value= value + ax + "\t" + ay + "\t" + az;
   
   Serial.println("accleration of X/Y/Z: ");
   Serial.print(ax);
@@ -165,7 +165,7 @@ void properPosition(){
 
   
 }
-*/
+
 
   
 }
@@ -177,8 +177,9 @@ void draw() {
          }
     }
 }
+*/
 
 void endProcess(){
-  draw();  
+ // draw();  
 }
 
