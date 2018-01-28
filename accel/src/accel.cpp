@@ -112,7 +112,7 @@ int main(void)
 
 		/* default to blue */
 		//lcd->setColor(0x00, 0x00, 0xff);
-	}
+	//}
 	return 0;
 }
 
