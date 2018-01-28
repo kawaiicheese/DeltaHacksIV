@@ -6,7 +6,7 @@ from email.utils import COMMASPACE, formatdate
 
 def send(msg, sender, recievers):
         username = sender
-        password = "**********"
+        password = "jojo123123"
                 
         sender = sender
         recievers = recievers
