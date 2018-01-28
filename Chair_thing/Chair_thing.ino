@@ -29,22 +29,35 @@ MMA7660 accelemeter;
 
 //import some time shiet
 //import processing.serial.*;
-PrintWriter output;
+//PrintWriter output;
 
 const int buttonPin = 2;
+
 int buttonState = 0;
 
 int lastMillis = 0;
 
-string value;
+int allowedGVariation = .15;
+
+int baseZG = 0;
+
+int proper = 0;
+int tempImproper = 0;
+int totalImproper = 0;
+
+int reminderFrequency = 3600;
+
+int8_t x;
+int8_t y;
+int8_t z;
+float ax,ay,az;
+
 
 void setup()
 {
 	accelemeter.init();  
 	Serial.begin(9600);
-
-  output = createWriter("data.txt");
-
+ 
   pinMode(buttonPin, INPUT);
 }
 
@@ -52,22 +65,43 @@ void loop()
 {
     
   buttonState = digitalRead(buttonPin);
-  if (buttonState && ((millis() - lastMillis)/1000 > 2.00)){
+
+  if (buttonState)
+  {
+    
+    if (improperPosition()){
+      tempImproper += 1;
+    }
+    else
+    {
+      proper += 1;
+    }
+
+    
+   
+  /*if (buttonState && ((millis() - lastMillis)/1000 > 2.00)){
     dataCollect();
   }else{
     endProcess();
   }
+  */
+  }
+  /*
+  if(improper >= reminderFrequency)
+  {
+    reminder();
+    totalImproper = tempImproper;
+    tempImproper = 0;
+  }
+  */
 }
 
 void dataCollect(){
    
-  int8_t x;
-  int8_t y;
-  int8_t z;
-  float ax,ay,az;
+
   accelemeter.getXYZ(&x,&y,&z);
 
-  value= value + x + "\t" + y + "\t" + z + "\t";
+  //value = value + x + "\t" + y + "\t" + z + "\t";
 
     serial.println("Position of X/Y/Z: ")
     Serial.println(x); 
@@ -89,6 +123,51 @@ void dataCollect(){
   Serial.println(" g");
   Serial.println("*************");
   delay(1000); 
+}
+
+bool improperPosition(){
+  
+   dataCollect();
+   if(baseZG + allowedGVariation < az  || baseZG - allowedGVariation > az )
+    {
+      delay(1000);
+      dataCollect();
+      if(baseZG + allowedGVariation > az  || baseZG - allowedGVariation < az ){
+
+      tempImproper += 1;
+      
+    }
+    else
+    {
+      delay(1000);
+    }
+  }
+  
+}
+/*
+void properPosition(){
+  
+  dataCollect();
+  if(baseZG + allowedGVariation > az  && baseZG - allowedGVariation < aZ )
+    {
+      delay(1000);
+      dataCollect();
+      if(baseZG + allowedGVariation > az  || baseZG - allowedGVariation < aZ ){
+
+      proper += 1;
+      
+    }
+    else
+    {
+      delay(1000);
+    }
+  }
+
+  
+}
+*/
+
+  
 }
 
 void draw() {
